@@ -1,88 +1,30 @@
-<htm>
-    <script src="canvasjs.min.js"></script>
-    <head>
-        
-    </head>
-    <script>
-        window.onload = () => {
-            var array = window.calcFFT();
+<!DOCTYPE html>
+<html lang="en">
 
-            var sequences = 5;
-            var dPoints = [];
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fourier Transform</title>
 
-            for (var i = 0; i < sequences; i++) {
-                dPoints.push({
-                    type: "line",
-                    dataPoints: window.calcFFT(i)
-                });
-            }
+    <link rel="stylesheet" href="style.css">
 
-            var chart = new CanvasJS.Chart("chartContainer", {
-                animationEnabled: true,
-                theme: "light2",
-                title: {
-                    text: "fourier transform"
-                },
-                axisY: {
-                    includeZero: false
-                },
-                data: dPoints
-            });
-            chart.render();
-        }
+    <script src="./canvasjs.min.js"></script>
+    <script src="./fourier.js"></script>
+</head>
 
-        window.calcFFT = (sequence) => {
-            var points = 200,
-                fo     = 26 * 100,
-                it     = (1 / (fo)) / points;
+<body>
+    <div id="Container" class="hidden">
+        <div id="ChartContainer"></div>
+    </div>
+    <form>
+        <input type="number" id="SequencesAmt" name="sequencesAmt" placeholder="Número de termos">
+        <div class="labeled">
+            <input type="checkbox" name="generateAll" id="GenerateAll" checked>
+            <label for="generateAll">Gerar todos os termos</label>
+        </div>
+        <button type="button" onclick="generateChart()">Gerar Gráfico</button>
+    </form>
+</body>
 
-            var wo = 2 * Math.PI * fo;
-
-            var c = 0;
-
-            var array = [];
-            for (var i = 0; i < 1000; i++) {
-                array.push({
-                    x : c,
-                    y : window.fourierTransform(sequence, wo, c) //(((2 / Math.PI) * (Math.sin(wo * c))) + 0.5)
-                });
-                c += it;
-            }
-            return array;
-        }
-
-        window.fourierTransform = (sequence, wo, t) => {
-            if (!t) 
-                return 0.5;
-            else {
-                var constantNumber = 0.5;
-                var firstPart = (2 / Math.PI);
-
-                var count = 1;
-                var array = [count];
-
-                for (var i = 0; i < sequence - 1; i++) {
-                    count += 2;
-                    array.push(count);
-                }
-
-                var acumulador = 0;
-
-                for (var i = 0; i < sequence; i++) {
-                    var x = array[i];
-                    var part_1 = (x * wo * t),
-                        part_2 = Math.sin(part_1);
-
-                    acumulador += ((1 / x) * part_2);
-                }
-
-                var c = (firstPart * acumulador) + constantNumber;
-                return c;
-            }
-        }
-
-    </script>
-    <body>
-        <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
-    </body>
-</htm>
+</html>
